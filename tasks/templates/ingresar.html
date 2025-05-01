@@ -1,26 +1,126 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load bootstrap_filters %}
 
-{% block title %}Ingresar{% endblock %}
+{% block title %}Iniciar Sesión{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-center align-items-center" style="height: 100vh; background-color: #f0e8d1;">
-    <div class="card" style="width: 30rem;">
-        <div class="card-body">
-            <h1 class="card-title text-center" style="color: #175d55;">Iniciar Sesión</h1>
-            <form action="{% url 'login' %}" method="POST" class="mt-3">
-                {% csrf_token %}
-                <div class="form-group">
-                    {{ form.username.label_tag }}
-                    {{ form.username|add_class:"form-control" }}
-                </div>
-                <div class="form-group">
-                    {{ form.password.label_tag }}
-                    {{ form.password|add_class:"form-control" }}
-                </div>
-                <button type="submit" class="btn btn-block" style="background-color: #175d55; color: white;">Iniciar Sesión</button>
-            </form>
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <img src="{% static 'images/logo8.png' %}" alt="Logo" class="login-logo">
+            <h1 class="login-title">Bienvenido</h1>
+            <p class="login-subtitle">Inicia sesión para acceder a tu cuenta.</p>
         </div>
+        <form action="{% url 'login' %}" method="POST" class="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}" class="form-label">Usuario</label>
+                {{ form.username|add_class:"form-control" }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}" class="form-label">Contraseña</label>
+                {{ form.password|add_class:"form-control" }}
+            </div>
+            <button type="submit" class="login-button">Iniciar Sesión</button>
+        </form>
+        
     </div>
 </div>
+
+<style>
+    .login-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #175d55, #f0e8d1); /* Gradiente de fondo */
+    }
+
+    .login-card {
+        background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semi-transparente */
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        padding: 40px;
+        text-align: center;
+    }
+
+    .login-header {
+        margin-bottom: 30px;
+    }
+
+    .login-logo {
+        width: 120px;
+        margin-bottom: 20px;
+    }
+
+    .login-title {
+        color: #175d55;
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    .login-subtitle {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+
+    .login-form .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .login-form .form-label {
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .login-form .form-control {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px 15px;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .login-button {
+        background-color: #175d55;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px 20px;
+        width: 100%;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .login-button:hover {
+        background-color: #134a44;
+    }
+
+    .login-footer {
+        margin-top: 25px;
+    }
+
+    .forgot-password, .signup-link {
+        color: #175d55;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .forgot-password:hover, .signup-link a:hover {
+        text-decoration: underline;
+    }
+
+    .signup-link {
+        margin-top: 10px;
+        display: block;
+    }
+</style>
 {% endblock %}

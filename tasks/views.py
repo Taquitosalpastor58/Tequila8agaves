@@ -120,7 +120,7 @@ def admin_dashboard(request):
     # Filtrar productos por nombre o proveedor si hay un término de búsqueda
     if query:
         productos = productos.filter(
-            Q(nombre_producto__icontains=query) | Q(proveedor__nombre_proveedor__icontains=query)
+            Q(nombre_producto__icontains=query) | Q(proveedor__nombre_proveedor__icontains(query))
         )
 
     # Configurar la paginación para productos
@@ -144,16 +144,6 @@ def admin_dashboard(request):
     form = InventarioForm()
     categoria_form = CategoriaForm()
     proveedor_form = ProveedorForm()
-
-    # Manejar el formulario de agregar producto
-    if request.method == "POST" and "producto_form" in request.POST:
-        form = InventarioForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Producto agregado exitosamente.")
-            return redirect("admin_dashboard")
-        else:
-            messages.error(request, "Error al agregar el producto. Verifica los datos ingresados.")
 
     return render(request, "admin_dashboard.html", {
         "productos": productos_paginados,
