@@ -1,0 +1,42 @@
+# Entorno virtual
+venv/
+*.pyc
+__pycache__/
+
+# Archivos de bases de datos
+*.sqlite3
+
+# Archivos de configuración del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de logs
+*.log
+
+# Archivos de migraciones compilados
+tasks/migrations/*.pyc
+tasks/migrations/__pycache__/
+
+# Archivos de configuración de IDEs
+.vscode/
+.idea/
+
+# Archivos estáticos generados
+staticfiles/
+static/
+
+# Archivos de medios subidos por usuarios
+media/
+
+# Archivos de configuración de Git
+.git/
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Archivos de configuración de Python
+*.env
+.env
