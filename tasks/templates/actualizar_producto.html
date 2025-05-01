@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizar Producto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #175d55;
+            color: #f0e8d1;
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            padding: 40px;
+        }
+        .btn-custom {
+            background-color: #ff9812;
+            color: #fff;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-custom:hover {
+            background-color: #d77d0c;
+            transform: scale(1.05);
+        }
+        .card {
+            background-color: #f0e8d1;
+            color: #175d55;
+            border-radius: 10px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center">Actualizar Producto</h2>
+        <div class="card shadow-sm">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-custom w-100">Actualizar Producto</button>
+                </div>
+            </form>
+        </div>
+        <div class="text-center mt-4">
+            <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Volver al Dashboard</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

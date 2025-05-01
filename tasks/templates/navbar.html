@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+</head>
+<body>
+    
+    
+{% block navbar %}
+        <nav>
+            <ul>    
+                <li><a href="/">Home</a></li>
+            </ul>
+            <ul>    
+                <li><a href="/tasks">Inicio</a></li>
+            </ul>
+         
+            {% if user.is_authenticated %}
+                
+                <li><a href="/logout">logout</a></li>
+                
+            {% else %}
+            <li><a href="/signup">Iniciar sesion </a></li>
+            <ul>
+                <li><a href="/ingresar">Ingresar </a></li>
+            </ul> 
+            {% endif %}
+            </nav>
+{% endblock navbar %}
+    
+
+</body>
+</html>
