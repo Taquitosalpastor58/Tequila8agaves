@@ -1,0 +1,23 @@
+<h3>Productos del proveedor: {{ proveedor.nombre_proveedor }}</h3>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Unidad</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.nombre_producto }}</td>
+            <td>{{ producto.cantidad }}</td>
+            <td>{{ producto.unidad }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="3" class="text-center">No hay productos para este proveedor.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
