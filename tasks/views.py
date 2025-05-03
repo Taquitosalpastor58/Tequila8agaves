@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LoginForm, CustomUserCreationForm, InventarioForm, CategoriaForm, ProveedorForm
-from .models import VentaBarra, Inventario
+from .models import VentaBarra, Inventario, Proveedor
 from django.contrib import messages  # Importa la librería de mensajes
 from django.db.models import Q, F
 from datetime import date
@@ -12,7 +12,7 @@ from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 
 # Verifica los productos marcados como para barra
-productos_barra = Inventario.objects.filter(para_barra=True, para_cocina=False)
+productos_barra = Inventario.objects.filter(para_barra=True)
 print("Productos para Barra:")
 for producto in productos_barra:
     print(producto.nombre_producto, producto.para_barra, producto.para_cocina)
@@ -116,11 +116,13 @@ def barra1_dashboard(request):
 def admin_dashboard(request):
     query = request.GET.get('q', '')  # Término de búsqueda
     productos = Inventario.objects.all().order_by('nombre_producto')
+    usuario = request.GET.get('usuario', None)
+    fecha = request.GET.get('fecha', None)
 
     # Filtrar productos por nombre o proveedor si hay un término de búsqueda
     if query:
         productos = productos.filter(
-            Q(nombre_producto__icontains=query) | Q(proveedor__nombre_proveedor__icontains(query))
+            Q(nombre_producto__icontains=query) | Q(proveedor__nombre_proveedor__icontains=query)
         )
 
     # Configurar la paginación para productos
@@ -132,7 +134,13 @@ def admin_dashboard(request):
     productos_bajo_stock = Inventario.objects.filter(cantidad__lte=F('limite_stock')).order_by('nombre_producto')
 
     # Bajas de inventario
+       # Filtrar las bajas de inventario
     bajas_inventario = BajaInventario.objects.all().order_by('-creado_en')
+    if usuario:
+        bajas_inventario = bajas_inventario.filter(usuario__username=usuario)
+    if fecha:
+        bajas_inventario = bajas_inventario.filter(creado_en__date=fecha)
+
 
     # Usuarios registrados
     usuarios = get_user_model().objects.all().order_by('username')
@@ -144,6 +152,34 @@ def admin_dashboard(request):
     form = InventarioForm()
     categoria_form = CategoriaForm()
     proveedor_form = ProveedorForm()
+    
+    # Agregar mensajes de depuración para verificar el flujo de datos
+    if request.method == "POST":
+        print("Datos recibidos en POST:", request.POST)
+        if "categoria_form" in request.POST:
+            categoria_form = CategoriaForm(request.POST)
+            if categoria_form.is_valid():
+                categoria_form.save()
+                messages.success(request, "Categoría agregada correctamente.")
+            else:
+                print("Errores en el formulario de categoría:", categoria_form.errors)
+                messages.error(request, "Error al agregar la categoría.")
+        elif "proveedor_form" in request.POST:
+            proveedor_form = ProveedorForm(request.POST)
+            if proveedor_form.is_valid():
+                proveedor_form.save()
+                messages.success(request, "Proveedor agregado correctamente.")
+            else:
+                print("Errores en el formulario de proveedor:", proveedor_form.errors)
+                messages.error(request, "Error al agregar el proveedor.")
+        elif "producto_form" in request.POST:
+            form = InventarioForm(request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Producto agregado correctamente.")
+            else:
+                print("Errores en el formulario de producto:", form.errors)
+                messages.error(request, "Error al agregar el producto.")
 
     return render(request, "admin_dashboard.html", {
         "productos": productos_paginados,
@@ -154,6 +190,10 @@ def admin_dashboard(request):
         "categoria_form": categoria_form,
         "proveedor_form": proveedor_form,
         "query": query,
+        'bajas_inventario': bajas_inventario,
+        'usuario_filtrado': usuario,
+        'fecha_filtrada': fecha,
+        
     })
 
 @login_required
@@ -196,16 +236,33 @@ def barra_dashboard(request):
 
 @login_required
 def cocina_dashboard(request):
-    """
-    Vista para mostrar productos específicos de Cocina.
-    """
-    # Verifica que el usuario tenga el rol "cocina"
     if request.user.role != "cocina":
         messages.error(request, "No tienes permiso para acceder a esta sección.")
-        return redirect("login")  # Redirige si el usuario no tiene el rol "cocina"
+        return redirect("login")
 
-    # Filtrar solo productos que son para cocina
     productos = Inventario.objects.filter(para_cocina=True)
+
+    if request.method == "POST":
+        productos_ids = request.POST.getlist("productos")
+        for producto_id in productos_ids:
+            producto = get_object_or_404(Inventario, id=producto_id)
+            cantidad = int(request.POST.get(f"cantidad_{producto_id}", 0))
+
+            if cantidad > 0 and cantidad <= producto.cantidad:
+                producto.cantidad -= cantidad
+                producto.save()
+
+                # Registrar la baja en el modelo BajaInventario
+                BajaInventario.objects.create(
+                    usuario=request.user,
+                    producto=producto,
+                    cantidad=cantidad,
+                    tipo_baja="medio"  # Cambiar según el momento del turno
+                )
+
+        messages.success(request, "Descuento aplicado correctamente.")
+        return redirect("cocina_dashboard")
+
     return render(request, "cocina_dashboard.html", {"productos": productos})
 
 @login_required

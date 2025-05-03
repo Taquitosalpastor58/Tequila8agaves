@@ -1,424 +1,762 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard</title>
     {% load static %}
-    <link rel="icon" href="{% static 'images/logo8.png' %}" type="image/png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="icon" href="{% static 'images/logo8.png' %}" type="image/png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    />
     <style>
-        body {
-            background-color: #175d55;
-            color: #f0e8d1;
-            font-family: 'Poppins', sans-serif;
-        }
-        .container {
-            padding: 40px;
-        }
-        h2, h3 {
-            color: #ff9812;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .btn-custom {
-            background-color: #ff9812;
-            color: #fff;
-            border-radius: 8px;
-            transition: all 0.3s ease-in-out;
-        }
-        .btn-custom:hover {
-            background-color: #d77d0c;
-            transform: scale(1.05);
-        }
-        .table {
-            background-color: #f0e8d1;
-            color: #175d55;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .table th {
-            background-color: #ff9812;
-            color: white;
-            text-align: center;
-        }
-        .table td {
-            text-align: center;
-        }
-        .card {
-            background-color: #f0e8d1;
-            color: #175d55;
-            border-radius: 10px;
-            padding: 20px;
-        }
-        .form-control {
-            background-color: #ffffff;
-            color: #175d55;
-            border-radius: 8px;
-        }
-        .alert {
-            text-align: center;
-            border-radius: 8px;
-        }
+      body {
+        background-color: #175d55;
+        color: #f0e8d1;
+        font-family: "Poppins", sans-serif;
+      }
+      .container {
+        padding: 40px;
+      }
+      h2,
+      h3 {
+        color: #ff9812;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .btn-custom {
+        background-color: #ff9812;
+        color: #fff;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+      }
+      .btn-custom:hover {
+        background-color: #d77d0c;
+        transform: scale(1.05);
+      }
+      .table {
+        background-color: #f0e8d1;
+        color: #175d55;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .table th {
+        background-color: #ff9812;
+        color: white;
+        text-align: center;
+      }
+      .table td {
+        text-align: center;
+      }
+      .card {
+        background-color: #f0e8d1;
+        color: #175d55;
+        border-radius: 10px;
+        padding: 20px;
+      }
+      .form-control {
+        background-color: #ffffff;
+        color: #175d55;
+        border-radius: 8px;
+      }
+      .alert {
+        text-align: center;
+        border-radius: 8px;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container mt-5">
-        <h2 class="text-center">Dashboard de Administrador</h2>
+      <h2 class="text-center">Dashboard de Administrador</h2>
 
-        {% if messages %}
-        <div class="mt-4">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
-            {% endfor %}
-        </div>
-        {% endif %}
+      {% if messages %}
+      <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
 
-        <h3 class="text-center mt-4">Inventario de Productos</h3>
+      <h3 class="text-center mt-4">Inventario de Productos</h3>
 
-        <!-- Botones para agregar producto, categoría y proveedor -->
-        <div class="text-center mb-4 d-flex justify-content-center gap-3">
-            <button class="btn btn-custom px-4 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#formAgregarProducto" aria-expanded="false" aria-controls="formAgregarProducto">
-                Agregar Producto
-            </button>
-            <button class="btn btn-custom px-4 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#formAgregarCategoria" aria-expanded="false" aria-controls="formAgregarCategoria">
-                Agregar Categoría
-            </button>
-            <button class="btn btn-custom px-4 py-2" type="button" data-bs-toggle="collapse" data-bs-target="#formAgregarProveedor" aria-expanded="false" aria-controls="formAgregarProveedor">
-                Agregar Proveedor
-            </button>
-        </div>
+      <!-- Botones para agregar producto, categoría y proveedor -->
+      <div class="text-center mb-4 d-flex justify-content-center gap-3">
+        <button
+          class="btn btn-custom px-4 py-2"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#formAgregarProducto"
+          aria-expanded="false"
+          aria-controls="formAgregarProducto"
+        >
+          Agregar Producto
+        </button>
+        <button
+          class="btn btn-custom px-4 py-2"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#formAgregarCategoria"
+          aria-expanded="false"
+          aria-controls="formAgregarCategoria"
+        >
+          Agregar Categoría
+        </button>
+        <button
+          class="btn btn-custom px-4 py-2"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#formAgregarProveedor"
+          aria-expanded="false"
+          aria-controls="formAgregarProveedor"
+        >
+          Agregar Proveedor
+        </button>
+      </div>
 
-        <!-- Formulario colapsable para agregar producto -->
-        <div class="collapse" id="formAgregarProducto">
-            <div class="card shadow-sm mb-4">
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="producto_form" value="1">
-                    <div class="mb-3">
-                        <label for="id_nombre_producto" class="form-label">Nombre del Producto</label>
-                        {{ form.nombre_producto }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_cantidad" class="form-label">Cantidad</label>
-                        {{ form.cantidad }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_unidad" class="form-label">Unidad</label>
-                        {{ form.unidad }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_categoria" class="form-label">Categoría</label>
-                        {{ form.categoria }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_proveedor" class="form-label">Proveedor</label>
-                        {{ form.proveedor }}
-                    </div>
-                    <div class="mb-3">
-                        <label for="id_limite_stock" class="form-label">Límite de Stock</label>
-                        {{ form.limite_stock }}
-                    </div>
-                    <div class="form-check mb-3">
-                        {{ form.para_barra }}
-                        <label for="id_para_barra" class="form-check-label">Para Barra</label>
-                    </div>
-                    <div class="form-check mb-3">
-                        {{ form.para_cocina }}
-                        <label for="id_para_cocina" class="form-check-label">Para Cocina</label>
-                    </div>
-                    <div class="text-center mt-3">
-                        <button type="submit" class="btn btn-custom w-100">Guardar Producto</button>
-                    </div>
-                </form>
+      <!-- Formulario colapsable para agregar producto -->
+      <div class="collapse" id="formAgregarProducto">
+        <div class="card shadow-sm mb-4">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="producto_form" value="1" />
+            <div class="mb-3">
+              <label for="id_nombre_producto" class="form-label"
+                >Nombre del Producto</label
+              >
+              {{ form.nombre_producto }}
             </div>
-        </div>
-
-        <!-- Formulario colapsable para agregar categoría -->
-        <div class="collapse" id="formAgregarCategoria">
-            <div class="card shadow-sm mb-4">
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="categoria_form" value="1">
-                    <div class="mb-3">
-                        <label for="id_nombre_categoria">Nombre de la Categoría</label>
-                        {{ categoria_form.nombre_categoria }}
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-custom w-100">Guardar Categoría</button>
-                    </div>
-                </form>
+            <div class="mb-3">
+              <label for="id_cantidad" class="form-label">Cantidad</label>
+              {{ form.cantidad }}
             </div>
-        </div>
-
-        <!-- Formulario colapsable para agregar proveedor -->
-        <div class="collapse" id="formAgregarProveedor">
-            <div class="card shadow-sm mb-4">
-                <form method="POST">
-                    {% csrf_token %}
-                    <input type="hidden" name="proveedor_form" value="1">
-                    <div class="mb-3">
-                        <label for="id_nombre_proveedor">Nombre del Proveedor</label>
-                        {{ proveedor_form.nombre_proveedor }}
-                    </div>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-custom w-100">Guardar Proveedor</button>
-                    </div>
-                </form>
+            <div class="mb-3">
+              <label for="id_unidad" class="form-label">Unidad</label>
+              {{ form.unidad }}
             </div>
+            <div class="mb-3">
+              <label for="id_categoria" class="form-label">Categoría</label>
+              {{ form.categoria }}
+            </div>
+            <div class="mb-3">
+              <label for="id_proveedor" class="form-label">Proveedor</label>
+              {{ form.proveedor }}
+            </div>
+            <div class="mb-3">
+              <label for="id_limite_stock" class="form-label"
+                >Límite de Stock</label
+              >
+              {{ form.limite_stock }}
+            </div>
+            <div class="form-check mb-3">
+              {{ form.para_barra }}
+              <label for="id_para_barra" class="form-check-label"
+                >Para Barra</label
+              >
+            </div>
+            <div class="form-check mb-3">
+              {{ form.para_cocina }}
+              <label for="id_para_cocina" class="form-check-label"
+                >Para Cocina</label
+              >
+            </div>
+            <div class="text-center mt-3">
+              <button type="submit" class="btn btn-custom w-100">
+                Guardar Producto
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
 
-        <!-- Filtro de búsqueda -->
-        <div class="text-center mb-4">
-            <form method="GET" class="d-flex justify-content-center">
-                <input type="text" name="q" class="form-control w-50 me-2" placeholder="Buscar por nombre o proveedor" value="{{ query }}">
-                <button type="submit" class="btn btn-custom">Buscar</button>
-            </form>
+      <!-- Formulario colapsable para agregar categoría -->
+      <div class="collapse" id="formAgregarCategoria">
+        <div class="card shadow-sm mb-4">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="categoria_form" value="1" />
+            <div class="mb-3">
+              <label for="id_nombre_categoria">Nombre de la Categoría</label>
+              {{ categoria_form.nombre_categoria }}
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-custom w-100">
+                Guardar Categoría
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
 
-        <!-- Tabla de productos -->
-        <h3 class="text-center mt-4">Inventario de Productos</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
+      <!-- Formulario colapsable para agregar proveedor -->
+      <div class="collapse" id="formAgregarProveedor">
+        <div class="card shadow-sm mb-4">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="proveedor_form" value="1" />
+            <div class="mb-3">
+              <label for="id_nombre_proveedor">Nombre del Proveedor</label>
+              {{ proveedor_form.nombre_proveedor }}
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-custom w-100">
+                Guardar Proveedor
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Filtro de búsqueda -->
+
+      <!-- Tabla de productos -->
+      <h3 class="text-center mt-4">Inventario de Productos</h3>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Unidad</th>
+            <th>Categoría</th>
+            <th>Proveedor</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for producto in productos %}
+          <tr>
+            <td>{{ producto.nombre_producto }}</td>
+            <td>{{ producto.cantidad }}</td>
+            <td>{{ producto.unidad }}</td>
+            <td>{{ producto.categoria.nombre_categoria }}</td>
+            <td>{{ producto.proveedor.nombre_proveedor }}</td>
+            <td>
+              <a
+                href="{% url 'actualizar_producto' producto.id %}"
+                class="btn btn-warning btn-sm"
+                >Editar</a
+              >
+              <a
+                href="{% url 'eliminar_producto' producto.id %}"
+                class="btn btn-danger btn-sm"
+                >Eliminar</a
+              >
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center">
+              No se encontraron productos.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="col-md-3">
+        <button
+          class="btn btn-custom w-100"
+          data-bs-toggle="modal"
+          data-bs-target="#modalbusqueda"
+        >
+          Busqueda de Baja 
+        </button>
+      </div>
+      <!-- Log de bajas de inventario -->
+      <div
+        class="modal fade"
+        id="modalbusqueda"
+        tabindex="-1"
+        aria-labelledby="modalbusquedaLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalbusquedaLabel">
+                Productos con Stock Bajo
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <h3 class="text-center mt-4">Log de Bajas de Inventario</h3>
+              <div class="text-center mb-4">
+                <form
+                  method="GET"
+                  class="d-flex justify-content-center align-items-center gap-3"
+                >
+                  <input
+                    type="text"
+                    name="usuario"
+                    class="form-control w-25"
+                    placeholder="Usuario"
+                    value="{{ usuario_filtrado }}"
+                  />
+                  <input
+                    type="date"
+                    name="fecha"
+                    class="form-control w-25"
+                    value="{{ fecha_filtrada }}"
+                  />
+                  <button type="submit" class="btn btn-custom">Filtrar</button>
+                </form>
+              </div>
+              <table class="table table-striped" id="tablaLogBajas">
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
                     <th>Producto</th>
                     <th>Cantidad</th>
-                    <th>Unidad</th>
-                    <th>Categoría</th>
-                    <th>Proveedor</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for producto in productos %}
-                <tr>
-                    <td>{{ producto.nombre_producto }}</td>
-                    <td>{{ producto.cantidad }}</td>
-                    <td>{{ producto.unidad }}</td>
-                    <td>{{ producto.categoria.nombre_categoria }}</td>
-                    <td>{{ producto.proveedor.nombre_proveedor }}</td>
-                    <td>
-                        <a href="{% url 'actualizar_producto' producto.id %}" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="{% url 'eliminar_producto' producto.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+                    <th>Hora del Descuento</th>
+                    <th>Tipo de Baja</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for baja in bajas_inventario %}
+                  <tr>
+                    <td>{{ baja.usuario.username }}</td>
+                    <td>{{ baja.producto.nombre_producto }}</td>
+                    <td>{{ baja.cantidad }}</td>
+                    <td>{{ baja.creado_en }}</td>
+                    <td>{{ baja.get_tipo_baja_display }}</td>
+                  </tr>
+                  {% empty %}
+                  <tr>
+                    <td colspan="5" class="text-center">
+                      No hay registros de bajas de inventario para los filtros
+                      seleccionados.
                     </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center">No se encontraron productos.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
 
-        <!-- Controles de paginación -->
-        <div class="d-flex justify-content-center mt-4">
-            <nav aria-label="Paginación de productos">
-                <ul class="pagination">
-                    {% if productos.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?productos_page={{ productos.previous_page_number }}" aria-label="Anterior">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% for num in productos.paginator.page_range %}
-                    <li class="page-item {% if productos.number == num %}active{% endif %}">
-                        <a class="page-link" href="?productos_page={{ num }}">{{ num }}</a>
-                    </li>
-                    {% endfor %}
-                    {% if productos.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?productos_page={{ productos.next_page_number }}" aria-label="Siguiente">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
+              <div class="text-center mt-3">
+                <button
+                  class="btn btn-custom w-100"
+                  onclick="imprimirLogFiltrado()"
+                >
+                  Imprimir Log Filtrado
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+      <div class="container mt-5">
+        <h2 class="text-center">Acciones Rápidas</h2>
 
-        <h3>Productos con Stock Bajo</h3>
-        <table class="table table-striped">
-            <thead>
+        <!-- Botones para abrir los modales -->
+        <div class="row text-center mt-4">
+          <div class="col-md-3">
+            <button
+              class="btn btn-custom w-100"
+              data-bs-toggle="modal"
+              data-bs-target="#modalStockBajo"
+            >
+              Stock Bajo
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button
+              class="btn btn-custom w-100"
+              data-bs-toggle="modal"
+              data-bs-target="#modalVentasDia"
+            >
+              Ventas del Día
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button
+              class="btn btn-custom w-100"
+              data-bs-toggle="modal"
+              data-bs-target="#modalBajasInventario"
+            >
+              Bajas de Inventario
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button
+              class="btn btn-custom w-100"
+              data-bs-toggle="modal"
+              data-bs-target="#modalUsuarios"
+            >
+              Usuarios Registrados
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="modalStockBajo"
+      tabindex="-1"
+      aria-labelledby="modalStockBajoLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalStockBajoLabel">
+              Productos con Stock Bajo
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
                 <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Unidad</th>
-                    <th>Límite de Stock</th>
+                  <th>Producto</th>
+                  <th>Cantidad</th>
+                  <th>Unidad</th>
+                  <th>Límite de Stock</th>
                 </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 {% for producto in productos_bajo_stock %}
                 <tr>
-                    <td>{{ producto.nombre_producto }}</td>
-                    <td>{{ producto.cantidad }} {{ producto.unidad }}</td>
-                    <td>{{ producto.unidad }}</td>
-                    <td>{{ producto.limite_stock }} {{ producto.unidad }}</td>
+                  <td>{{ producto.nombre_producto }}</td>
+                  <td>{{ producto.cantidad }} {{ producto.unidad }}</td>
+                  <td>{{ producto.unidad }}</td>
+                  <td>{{ producto.limite_stock }} {{ producto.unidad }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center">No hay productos con stock bajo.</td>
+                  <td colspan="4" class="text-center">
+                    No hay productos con stock bajo.
+                  </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+              </tbody>
+            </table>
+            <button
+              class="btn btn-custom w-100 mt-3"
+              onclick="printTable('modalStockBajo')"
+            >
+              Imprimir PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-
-        <h3>Ventas del Día en {{ area|title }}</h3>
-        <table class="table table-striped">
-            <thead>
+    <div
+      class="modal fade"
+      id="modalBajasInventario"
+      tabindex="-1"
+      aria-labelledby="modalBajasInventarioLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalBajasInventarioLabel">
+              Bajas de Inventario
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
                 <tr>
-                    <th>Producto</th>
-                    <th>Cantidad Vendida</th>
-                    <th>Fecha</th>
+                  <th>Usuario</th>
+                  <th>Producto</th>
+                  <th>Unidad</th>
+                  <th>Cantidad</th>
+                  <th>Fecha</th>
                 </tr>
-            </thead>
-            <tbody>
-                {% for venta in ventas %}
-                <tr>
-                    <td>{{ venta.producto.nombre_producto }}</td>
-                    <td>{{ venta.cantidad_vendida }}</td>
-                    <td>{{ venta.creado_en }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="3" class="text-center">No hay ventas realizadas hoy en esta área.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <h3>Bajas de Inventario</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Producto</th>
-                    <th>Unidad</th>
-                    <th>Cantidad</th>
-                    <th>Fecha</th>
-                </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 {% for baja in bajas_inventario %}
                 <tr>
-                    <td>{{ baja.usuario.username }}</td>
-                    <td>{{ baja.producto.nombre_producto }}</td>
-                    <td>{{ baja.producto.unidad }}</td>
-                    <td>{{ baja.cantidad }}</td>
-                    <td>{{ baja.creado_en }}</td>
+                  <td>{{ baja.usuario.username }}</td>
+                  <td>{{ baja.producto.nombre_producto }}</td>
+                  <td>{{ baja.producto.unidad }}</td>
+                  <td>{{ baja.cantidad }}</td>
+                  <td>{{ baja.creado_en }}</td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center">No hay bajas registradas.</td>
+                  <td colspan="5" class="text-center">
+                    No hay bajas registradas.
+                  </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+              </tbody>
+            </table>
+            <button
+              class="btn btn-custom w-100 mt-3"
+              onclick="printTable('modalBajasInventario')"
+            >
+              Imprimir PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <h3>Bajas de Inventario por Área</h3>
-        <table class="table table-striped">
-            <thead>
+    <div
+      class="modal fade"
+      id="modalUsuarios"
+      tabindex="-1"
+      aria-labelledby="modalUsuariosLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalUsuariosLabel">
+              Usuarios Registrados
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped">
+              <thead>
                 <tr>
-                    <th>Área</th>
-                    <th>Usuario</th>
-                    <th>Producto</th>
-                    <th>Unidad</th>
-                    <th>Cantidad</th>
-                    <th>Fecha</th>
+                  <th>Nombre de Usuario</th>
+                  <th>Correo Electrónico</th>
+                  <th>Rol</th>
                 </tr>
-            </thead>
-            <tbody>
-                {% for baja in bajas_inventario %}
-                <tr>
-                    <td>
-                        {% if baja.usuario.role == "barra1" %}
-                            Barra 1
-                        {% elif baja.usuario.role == "barra2" %}
-                            Barra 2
-                        {% elif baja.usuario.role == "cocina" %}
-                            Cocina
-                        {% else %}
-                            Sin Área
-                        {% endif %}
-                    </td>
-                    <td>{{ baja.usuario.username }}</td>
-                    <td>{{ baja.producto.nombre_producto }}</td>
-                    <td>{{ baja.producto.unidad }}</td>
-                    <td>{{ baja.cantidad }}</td>
-                    <td>{{ baja.creado_en }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="text-center">No hay bajas registradas.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <h3>Usuarios Registrados</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Nombre de Usuario</th>
-                    <th>Correo Electrónico</th>
-                    <th>Rol</th>
-                </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 {% for usuario in usuarios %}
                 <tr>
-                    <td>{{ usuario.username }}</td>
-                    <td>{{ usuario.email }}</td>
-                    <td>
-                        {% if usuario.role == "admin" %}
-                            Administrador
-                        {% elif usuario.role == "barra1" %}
-                            Barra 1
-                        {% elif usuario.role == "barra2" %}
-                            Barra 2
-                        {% elif usuario.role == "cocina" %}
-                            Cocina
-                        {% else %}
-                            Sin Rol Asignado
-                        {% endif %}
-                    </td>
+                  <td>{{ usuario.username }}</td>
+                  <td>{{ usuario.email }}</td>
+                  <td>
+                    {% if usuario.role == "admin" %} Administrador {% elif
+                    usuario.role == "barra1" %} Barra 1 {% elif usuario.role ==
+                    "barra2" %} Barra 2 {% elif usuario.role == "cocina" %}
+                    Cocina {% else %} Sin Rol Asignado {% endif %}
+                  </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="3" class="text-center">No hay usuarios registrados.</td>
+                  <td colspan="3" class="text-center">
+                    No hay usuarios registrados.
+                  </td>
                 </tr>
                 {% endfor %}
-            </tbody>
-        </table>
-
-        <!-- Controles de paginación -->
-        <div class="d-flex justify-content-center mt-4">
-            <nav aria-label="Paginación de usuarios">
-                <ul class="pagination">
-                    {% if usuarios.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ usuarios.previous_page_number }}" aria-label="Anterior">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                    {% for num in usuarios.paginator.page_range %}
-                    <li class="page-item {% if usuarios.number == num %}active{% endif %}">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-                    </li>
-                    {% endfor %}
-                    {% if usuarios.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ usuarios.next_page_number }}" aria-label="Siguiente">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
+              </tbody>
+            </table>
+            <button
+              class="btn btn-custom w-100 mt-3"
+              onclick="printTable('modalUsuarios')"
+            >
+              Imprimir PDF
+            </button>
+          </div>
         </div>
+      </div>
     </div>
+
+    <script>
+      function printTable(modalId) {
+        const modal = document.getElementById(modalId);
+        const table = modal.querySelector("table").outerHTML;
+        const newWindow = window.open("", "_blank");
+
+        newWindow.document.write(`
+            <html>
+                <head>
+                    <title>Reporte</title>
+                    <style>
+                        body {
+                            font-family: 'Arial', sans-serif;
+                            margin: 20px;
+                            color: #333;
+                        }
+                        h2 {
+                            text-align: center;
+                            color: #175d55;
+                            margin-bottom: 20px;
+                        }
+                        p {
+                            text-align: center;
+                            font-size: 14px;
+                            margin: 5px 0;
+                        }
+                        table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }
+                        th, td {
+                            border: 1px solid #ddd;
+                            padding: 10px;
+                            text-align: center;
+                        }
+                        th {
+                            background-color: #175d55;
+                            color: white;
+                            font-weight: bold;
+                        }
+                        tr:nth-child(even) {
+                            background-color: #f9f9f9;
+                        }
+                        tr:hover {
+                            background-color: #f1f1f1;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h2>Reporte</h2>
+                    <p><strong>Fecha:</strong> ${new Date().toLocaleString()}</p>
+                    ${table}
+                </body>
+            </html>
+        `);
+
+        newWindow.document.close();
+        newWindow.print();
+      }
+
+      function imprimirTablaSeleccionados() {
+        const tabla = document.getElementById(
+          "tablaProductosSeleccionados"
+        ).outerHTML;
+        const usuario = "{{ request.user.username }}";
+        const fecha = new Date().toLocaleString();
+
+        const newWindow = window.open("", "_blank");
+        newWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Productos Seleccionados</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h2 { text-align: center; color: #333; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                            th { background-color: #f4f4f4; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Productos Seleccionados</h2>
+                        <p><strong>Usuario:</strong> ${usuario}</p>
+                        <p><strong>Fecha:</strong> ${fecha}</p>
+                        ${tabla}
+                    </body>
+                </html>
+            `);
+        newWindow.document.close();
+        newWindow.print();
+      }
+
+      function imprimirReporteDescuento() {
+        const tabla = document.getElementById(
+          "tablaProductosSeleccionados"
+        ).outerHTML;
+        const fecha = new Date().toLocaleString();
+
+        const newWindow = window.open("", "_blank");
+        newWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Reporte de Descuento</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h2 { text-align: center; color: #333; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                            th { background-color: #f4f4f4; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Reporte de Descuento</h2>
+                        <p><strong>Fecha del Reporte:</strong> ${fecha}</p>
+                        ${tabla}
+                    </body>
+                </html>
+            `);
+        newWindow.document.close();
+        newWindow.print();
+      }
+
+      function imprimirLogBajas() {
+        const tabla = document.getElementById("tablaLogBajas").outerHTML;
+        const fecha = new Date().toLocaleString();
+
+        const newWindow = window.open("", "_blank");
+        newWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Log de Bajas de Inventario</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h2 { text-align: center; color: #333; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                            th { background-color: #f4f4f4; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Log de Bajas de Inventario</h2>
+                        <p><strong>Fecha del Reporte:</strong> ${fecha}</p>
+                        ${tabla}
+                    </body>
+                </html>
+            `);
+        newWindow.document.close();
+        newWindow.print();
+      }
+
+      function imprimirLogFiltrado() {
+        const tabla = document.getElementById("tablaLogBajas");
+        if (!tabla) {
+          alert("No se encontró la tabla para imprimir.");
+          return;
+        }
+
+        const tablaHTML = tabla.outerHTML;
+        const usuario = "{{ usuario_filtrado|default:'Todos los usuarios' }}";
+        const fecha = "{{ fecha_filtrada|default:'Todas las fechas' }}";
+
+        const newWindow = window.open("", "_blank");
+        newWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Log de Bajas de Inventario</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            h2 { text-align: center; color: #333; }
+                            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+                            th { background-color: #f4f4f4; }
+                        </style>
+                    </head>
+                    <body>
+                        <h2>Log de Bajas de Inventario</h2>
+                        <p><strong>Usuario:</strong> ${usuario}</p>
+                        <p><strong>Fecha:</strong> ${fecha}</p>
+                        ${tablaHTML}
+                    </body>
+                </html>
+            `);
+        newWindow.document.close();
+        newWindow.print();
+      }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+  </body>
 </html>
