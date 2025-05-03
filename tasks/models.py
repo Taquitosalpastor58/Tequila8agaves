@@ -17,6 +17,7 @@ class CustomUser(AbstractUser):
     # Método para representar el objeto como una cadena
     def __str__(self):
         return f"{self.username} - {self.role}"
+    pass
 
 # Modelo de tarea
 class Task(models.Model):
@@ -37,7 +38,7 @@ class Task(models.Model):
     def __str__(self):
         return self.title
 
-# Modelo de Proveedores
+# Modelo de 
 class Proveedor(models.Model):
     nombre_proveedor = models.CharField(max_length=100)
 
@@ -69,6 +70,7 @@ class Inventario(models.Model):
     limite_stock = models.DecimalField(max_digits=10, decimal_places=2)
     para_barra = models.BooleanField(default=False)
     para_cocina = models.BooleanField(default=False)
+   
 
     def __str__(self):
         return self.nombre_producto
@@ -144,7 +146,13 @@ class BajaInventario(models.Model):
     producto = models.ForeignKey(Inventario, on_delete=models.CASCADE)  # Producto dado de baja
     cantidad = models.PositiveIntegerField()  # Cantidad dada de baja
     creado_en = models.DateTimeField(auto_now_add=True)  # Fecha y hora de la baja
+    TIPO_BAJA_CHOICES = [
+        ('inicio', 'Inicio de Turno'),
+        ('medio', 'Medio Turno'),
+        ('final', 'Final de Turno'),
+    ]
+    tipo_baja = models.CharField(max_length=10, choices=TIPO_BAJA_CHOICES, default='inicio')
 
     # Método para representar el objeto como una cadena
     def __str__(self):
-        return f"{self.usuario.username} dio de baja {self.cantidad} {self.producto.unidad} de {self.producto.nombre_producto}"
+        return f"{self.usuario.username} - {self.producto.nombre_producto} - {self.cantidad} ({self.tipo_baja})"

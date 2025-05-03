@@ -65,5 +65,4 @@ class ProveedorForm(forms.ModelForm):
         model = Proveedor
         fields = ['nombre_proveedor']
         widgets = {
-            'nombre_proveedor': forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre_proveedor'}),
-        }
+            'nombre_proveedor': forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre_proveedor'}),}
