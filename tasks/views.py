@@ -100,15 +100,35 @@ def logout_view(request):
 @login_required
 def barra1_dashboard(request):
     """
-    Vista para mostrar productos específicos de Barra 1.
+    Vista para manejar productos específicos de Barra 1.
     """
-    # Verifica que el usuario tenga el rol "barra1"
     if request.user.role != "barra1":
         messages.error(request, "No tienes permiso para acceder a esta sección.")
-        return redirect("login")  # Redirige si el usuario no tiene el rol "barra1"
+        return redirect("login")
 
-    # Filtrar solo productos que son para barra y no para cocina
     productos = Inventario.objects.filter(para_barra=True, para_cocina=False)
+
+    if request.method == "POST":
+        productos_ids = request.POST.getlist("productos")
+        for producto_id in productos_ids:
+            producto = get_object_or_404(Inventario, id=producto_id)
+            cantidad = int(request.POST.get(f"cantidad_{producto_id}", 0))
+
+            if cantidad > 0 and cantidad <= producto.cantidad:
+                producto.cantidad -= cantidad
+                producto.save()
+
+                # Registrar la baja en el modelo BajaInventario
+                BajaInventario.objects.create(
+                    usuario=request.user,
+                    producto=producto,
+                    cantidad=cantidad,
+                    tipo_baja="medio"  # Cambiar según el momento del turno
+                )
+
+        messages.success(request, "Descuento aplicado correctamente.")
+        return redirect("barra1_dashboard")
+
     return render(request, "barra1_dashboard.html", {"productos": productos})
 
 # Vista para el dashboard del administrador (requiere autenticación)
@@ -243,10 +263,13 @@ def cocina_dashboard(request):
     productos = Inventario.objects.filter(para_cocina=True)
 
     if request.method == "POST":
+        print("Datos recibidos en POST:", request.POST)
         productos_ids = request.POST.getlist("productos")
         for producto_id in productos_ids:
             producto = get_object_or_404(Inventario, id=producto_id)
             cantidad = int(request.POST.get(f"cantidad_{producto_id}", 0))
+
+            print(f"Procesando producto: {producto.nombre_producto}, Cantidad solicitada: {cantidad}, Cantidad disponible: {producto.cantidad}")
 
             if cantidad > 0 and cantidad <= producto.cantidad:
                 producto.cantidad -= cantidad
@@ -259,6 +282,9 @@ def cocina_dashboard(request):
                     cantidad=cantidad,
                     tipo_baja="medio"  # Cambiar según el momento del turno
                 )
+                print(f"Descuento aplicado: {cantidad} de {producto.nombre_producto}")
+            else:
+                print(f"Error: Cantidad inválida para {producto.nombre_producto}")
 
         messages.success(request, "Descuento aplicado correctamente.")
         return redirect("cocina_dashboard")
@@ -282,18 +308,36 @@ def ventas_por_area(request, area):
 @login_required
 def barra2_dashboard(request):
     """
-    Vista para mostrar productos específicos de Barra 2.
+    Vista para manejar productos específicos de Barra 2.
     """
-    # Verifica que el usuario tenga el rol "barra2"
     if request.user.role != "barra2":
         messages.error(request, "No tienes permiso para acceder a esta sección.")
-        return redirect("login")  # Redirige si el usuario no tiene el rol "barra2"
+        return redirect("login")
 
-    # Filtrar solo productos que son para barra y no para cocina
     productos = Inventario.objects.filter(para_barra=True, para_cocina=False)
+
+    if request.method == "POST":
+        productos_ids = request.POST.getlist("productos")
+        for producto_id in productos_ids:
+            producto = get_object_or_404(Inventario, id=producto_id)
+            cantidad = int(request.POST.get(f"cantidad_{producto_id}", 0))
+
+            if cantidad > 0 and cantidad <= producto.cantidad:
+                producto.cantidad -= cantidad
+                producto.save()
+
+                # Registrar la baja en el modelo BajaInventario
+                BajaInventario.objects.create(
+                    usuario=request.user,
+                    producto=producto,
+                    cantidad=cantidad,
+                    tipo_baja="medio"  # Cambiar según el momento del turno
+                )
+
+        messages.success(request, "Descuento aplicado correctamente.")
+        return redirect("barra2_dashboard")
+
     return render(request, "barra2_dashboard.html", {"productos": productos})
-
-
 
 @login_required
 def dar_baja_producto(request, producto_id):
@@ -352,3 +396,70 @@ def dar_baja_producto_barra(request, producto_id):
         return redirect("barra1_dashboard")  # Cambia a "barra2_dashboard" si es para Barra 2
 
     return render(request, "dar_baja_producto_barra.html", {"producto": producto})
+
+@login_required
+def finalizar_turno(request):
+    """
+    Vista para registrar productos no utilizados al final del turno y reintegrarlos al inventario.
+    Filtra los productos según el área del usuario.
+    """
+    # Filtrar productos según el área del usuario
+    if request.user.role == "cocina":
+        productos = Inventario.objects.filter(para_cocina=True)
+    elif request.user.role == "barra1":
+        productos = Inventario.objects.filter(para_barra=True, para_cocina=False)
+    elif request.user.role == "barra2":
+        productos = Inventario.objects.filter(para_barra=True, para_cocina=False)
+    else:
+        messages.error(request, "No tienes permiso para acceder a esta sección.")
+        return redirect("dashboard")
+
+    if request.method == "POST":
+        print("Datos recibidos en POST:", request.POST)  # Depuración
+        productos_ids = request.POST.getlist("productos")
+
+        if not productos_ids:
+            messages.error(request, "No se seleccionaron productos para finalizar el turno.")
+            return render(request, "finalizar_turno.html", {"productos": productos})
+
+        for producto_id in productos_ids:
+            try:
+                producto = get_object_or_404(productos, id=producto_id)  # Filtrar solo productos del área
+                cantidad_no_utilizada = request.POST.get(f"cantidad_{producto_id}", "")
+
+                if not cantidad_no_utilizada.isdigit() or int(cantidad_no_utilizada) <= 0:
+                    messages.error(request, f"Cantidad inválida para el producto {producto.nombre_producto}.")
+                    print(f"Cantidad inválida para {producto.nombre_producto}: {cantidad_no_utilizada}")  # Depuración
+                    continue
+
+                cantidad_no_utilizada = int(cantidad_no_utilizada)
+
+                print(f"Procesando producto: {producto.nombre_producto}, Cantidad no utilizada: {cantidad_no_utilizada}, Cantidad actual: {producto.cantidad}")  # Depuración
+
+                # Registrar como no utilizado
+                BajaInventario.objects.create(
+                    usuario=request.user,
+                    producto=producto,
+                    cantidad=cantidad_no_utilizada,
+                    tipo_baja="no_utilizado"
+                )
+
+                # Reintegrar la cantidad no utilizada al inventario
+                producto.cantidad += cantidad_no_utilizada
+                producto.save()
+
+                # Confirmar que el producto se actualizó en la base de datos
+                producto_refrescado = Inventario.objects.get(id=producto_id)
+                print(f"Cantidad actualizada en la base de datos para {producto_refrescado.nombre_producto}: {producto_refrescado.cantidad}")
+
+                # Agregar alerta visual para confirmar la actualización
+                messages.success(request, f"Se reintegraron {cantidad_no_utilizada} unidades de {producto.nombre_producto} al inventario.")
+            except Exception as e:
+                print(f"Error procesando producto ID {producto_id}: {e}")  # Depuración de errores
+
+        # Refrescar los productos después de la operación
+        productos = Inventario.objects.filter(para_cocina=True) if request.user.role == "cocina" else productos
+        print("Productos actualizados después de finalizar el turno:", productos)  # Depuración
+        return render(request, "finalizar_turno.html", {"productos": productos})
+
+    return render(request, "finalizar_turno.html", {"productos": productos})

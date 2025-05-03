@@ -150,8 +150,9 @@ class BajaInventario(models.Model):
         ('inicio', 'Inicio de Turno'),
         ('medio', 'Medio Turno'),
         ('final', 'Final de Turno'),
+        ('no_utilizado', 'No Utilizado'),
     ]
-    tipo_baja = models.CharField(max_length=10, choices=TIPO_BAJA_CHOICES, default='inicio')
+    tipo_baja = models.CharField(max_length=15, choices=TIPO_BAJA_CHOICES, default='inicio')
 
     # Método para representar el objeto como una cadena
     def __str__(self):

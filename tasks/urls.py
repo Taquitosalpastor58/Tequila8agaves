@@ -1,6 +1,7 @@
 # Importaciones necesarias
 from django.urls import path
 from . import views
+from .views import finalizar_turno
 
 # Definición de las rutas de la aplicación
 urlpatterns = [
@@ -30,4 +31,6 @@ urlpatterns = [
     path('cocina/dar_baja/<int:producto_id>/', views.dar_baja_producto, name='dar_baja_producto'),
     # Nueva URL para dar de baja producto en Barra
     path('barra/dar_baja/<int:producto_id>/', views.dar_baja_producto_barra, name='dar_baja_producto_barra'),
+    # Nueva URL para finalizar turno
+    path('finalizar_turno/', finalizar_turno, name='finalizar_turno'),
 ]
