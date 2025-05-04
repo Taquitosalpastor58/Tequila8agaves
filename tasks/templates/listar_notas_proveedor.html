@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <h2 class="text-center">Notas o Facturas de Proveedores</h2>
+
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Proveedor</th>
+                <th>Archivo</th>
+                <th>Fecha de Subida</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nota in notas %}
+            <tr>
+                <td>{{ nota.proveedor.nombre_proveedor }}</td>
+                <td><a href="{{ nota.archivo.url }}" target="_blank">Ver Archivo</a></td>
+                <td>{{ nota.fecha_subida }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">No hay notas o facturas subidas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

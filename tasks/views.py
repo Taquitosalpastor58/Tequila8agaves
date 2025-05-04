@@ -2,8 +2,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LoginForm, CustomUserCreationForm, InventarioForm, CategoriaForm, ProveedorForm
-from .models import VentaBarra, Inventario, Proveedor
+from .forms import LoginForm, CustomUserCreationForm, InventarioForm, CategoriaForm, ProveedorForm, NotaProveedorForm
+from .models import VentaBarra, Inventario, Proveedor, NotaProveedor
 from django.contrib import messages  # Importa la librería de mensajes
 from django.db.models import Q, F
 from datetime import date
@@ -398,68 +398,21 @@ def dar_baja_producto_barra(request, producto_id):
     return render(request, "dar_baja_producto_barra.html", {"producto": producto})
 
 @login_required
-def finalizar_turno(request):
-    """
-    Vista para registrar productos no utilizados al final del turno y reintegrarlos al inventario.
-    Filtra los productos según el área del usuario.
-    """
-    # Filtrar productos según el área del usuario
-    if request.user.role == "cocina":
-        productos = Inventario.objects.filter(para_cocina=True)
-    elif request.user.role == "barra1":
-        productos = Inventario.objects.filter(para_barra=True, para_cocina=False)
-    elif request.user.role == "barra2":
-        productos = Inventario.objects.filter(para_barra=True, para_cocina=False)
+def agregar_nota_proveedor(request):
+    if request.method == 'POST':
+        form = NotaProveedorForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Nota o factura subida correctamente.')
+            return redirect('admin_dashboard')
+        else:
+            messages.error(request, 'Error al subir la nota o factura. Verifica los datos.')
     else:
-        messages.error(request, "No tienes permiso para acceder a esta sección.")
-        return redirect("dashboard")
+        form = NotaProveedorForm()
 
-    if request.method == "POST":
-        print("Datos recibidos en POST:", request.POST)  # Depuración
-        productos_ids = request.POST.getlist("productos")
+    return render(request, 'agregar_nota_proveedor.html', {'form': form})
 
-        if not productos_ids:
-            messages.error(request, "No se seleccionaron productos para finalizar el turno.")
-            return render(request, "finalizar_turno.html", {"productos": productos})
-
-        for producto_id in productos_ids:
-            try:
-                producto = get_object_or_404(productos, id=producto_id)  # Filtrar solo productos del área
-                cantidad_no_utilizada = request.POST.get(f"cantidad_{producto_id}", "")
-
-                if not cantidad_no_utilizada.isdigit() or int(cantidad_no_utilizada) <= 0:
-                    messages.error(request, f"Cantidad inválida para el producto {producto.nombre_producto}.")
-                    print(f"Cantidad inválida para {producto.nombre_producto}: {cantidad_no_utilizada}")  # Depuración
-                    continue
-
-                cantidad_no_utilizada = int(cantidad_no_utilizada)
-
-                print(f"Procesando producto: {producto.nombre_producto}, Cantidad no utilizada: {cantidad_no_utilizada}, Cantidad actual: {producto.cantidad}")  # Depuración
-
-                # Registrar como no utilizado
-                BajaInventario.objects.create(
-                    usuario=request.user,
-                    producto=producto,
-                    cantidad=cantidad_no_utilizada,
-                    tipo_baja="no_utilizado"
-                )
-
-                # Reintegrar la cantidad no utilizada al inventario
-                producto.cantidad += cantidad_no_utilizada
-                producto.save()
-
-                # Confirmar que el producto se actualizó en la base de datos
-                producto_refrescado = Inventario.objects.get(id=producto_id)
-                print(f"Cantidad actualizada en la base de datos para {producto_refrescado.nombre_producto}: {producto_refrescado.cantidad}")
-
-                # Agregar alerta visual para confirmar la actualización
-                messages.success(request, f"Se reintegraron {cantidad_no_utilizada} unidades de {producto.nombre_producto} al inventario.")
-            except Exception as e:
-                print(f"Error procesando producto ID {producto_id}: {e}")  # Depuración de errores
-
-        # Refrescar los productos después de la operación
-        productos = Inventario.objects.filter(para_cocina=True) if request.user.role == "cocina" else productos
-        print("Productos actualizados después de finalizar el turno:", productos)  # Depuración
-        return render(request, "finalizar_turno.html", {"productos": productos})
-
-    return render(request, "finalizar_turno.html", {"productos": productos})
+@login_required
+def listar_notas_proveedor(request):
+    notas = NotaProveedor.objects.all().order_by('-fecha_subida')
+    return render(request, 'listar_notas_proveedor.html', {'notas': notas})

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Agregar Nota o Factura de Proveedor</h2>
+
+    {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_proveedor" class="form-label">Proveedor</label>
+                {{ form.proveedor }}
+            </div>
+            <div class="mb-3">
+                <label for="id_archivo" class="form-label">Archivo PDF</label>
+                {{ form.archivo }}
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-custom w-100">Subir Nota o Factura</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

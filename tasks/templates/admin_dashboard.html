@@ -261,6 +261,18 @@
           Busqueda de Baja 
         </button>
       </div>
+      <!-- Botón para agregar notas o facturas de proveedores -->
+      <div class="text-center mb-4">
+        <a href="{% url 'agregar_nota_proveedor' %}" class="btn btn-custom px-4 py-2">Agregar Nota o Factura</a>
+      </div>
+
+      <!-- Botón para listar notas o facturas de proveedores -->
+      <div class="text-center mb-4">
+        <a href="{% url 'listar_notas_proveedor' %}" class="btn btn-custom px-4 py-2">Ver Notas o Facturas</a>
+      </div>
+
+      <!-- Tabla para mostrar notas o facturas de proveedores -->
+     
       <!-- Log de bajas de inventario -->
       <div
         class="modal fade"

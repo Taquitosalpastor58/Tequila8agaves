@@ -157,3 +157,13 @@ class BajaInventario(models.Model):
     # Método para representar el objeto como una cadena
     def __str__(self):
         return f"{self.usuario.username} - {self.producto.nombre_producto} - {self.cantidad} ({self.tipo_baja})"
+
+# Modelo de Nota de Proveedor
+class NotaProveedor(models.Model):
+    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE, related_name='notas')
+    archivo = models.FileField(upload_to='notas_proveedor/')
+    fecha_subida = models.DateTimeField(auto_now_add=True)
+
+    # Método para representar el objeto como una cadena
+    def __str__(self):
+        return f"Nota de {self.proveedor.nombre_proveedor} - {self.fecha_subida}"

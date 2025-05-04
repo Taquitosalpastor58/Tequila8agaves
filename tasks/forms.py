@@ -1,7 +1,7 @@
 # Importaciones necesarias
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser, VentaBarra, Inventario, Categoria, Proveedor
+from .models import CustomUser, VentaBarra, Inventario, Categoria, Proveedor, NotaProveedor
 
 # Formulario de creación de usuario personalizado
 class CustomUserCreationForm(UserCreationForm):
@@ -65,4 +65,15 @@ class ProveedorForm(forms.ModelForm):
         model = Proveedor
         fields = ['nombre_proveedor']
         widgets = {
-            'nombre_proveedor': forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre_proveedor'}),}
+            'nombre_proveedor': forms.TextInput(attrs={'class': 'form-control', 'id': 'id_nombre_proveedor'}),
+        }
+
+# Formulario para subir notas o facturas de proveedores
+class NotaProveedorForm(forms.ModelForm):
+    class Meta:
+        model = NotaProveedor
+        fields = ['proveedor', 'archivo']
+        widgets = {
+            'proveedor': forms.Select(attrs={'class': 'form-control'}),
+            'archivo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
