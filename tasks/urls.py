@@ -30,4 +30,8 @@ urlpatterns = [
     path('cocina/dar_baja/<int:producto_id>/', views.dar_baja_producto, name='dar_baja_producto'),
     # Nueva URL para dar de baja producto en Barra
     path('barra/dar_baja/<int:producto_id>/', views.dar_baja_producto_barra, name='dar_baja_producto_barra'),
+    # Nueva URL para agregar notas o facturas de proveedores
+    path('agregar_nota_proveedor/', views.agregar_nota_proveedor, name='agregar_nota_proveedor'),
+    # Nueva URL para listar notas o facturas de proveedores
+    path('listar_notas_proveedor/', views.listar_notas_proveedor, name='listar_notas_proveedor'),
 ]

@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background-color: #175d55;
+        color: #f0e8d1;
+    }
+    .container {
+        padding: 20px;
+    }
+    h2 {
+        color: #ff9812;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .btn-custom {
+        background-color: #ff9812;
+        color: #fff;
+        border: none;
+        transition: 0.3s;
+    }
+    .btn-custom:hover {
+        background-color: #d77d0c;
+    }
+    .alert {
+        text-align: center;
+    }
+    .card {
+        background-color: #f0e8d1;
+        color: #175d55;
+        border: none;
+    }
+    .form-label {
+        color: #ff9812;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center">Agregar Nota o Factura de Proveedor</h2>
+
+    {% if messages %}
+    <div class="mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm p-4">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_proveedor" class="form-label">Proveedor</label>
+                {{ form.proveedor }}
+            </div>
+            <div class="mb-3">
+                <label for="id_archivo" class="form-label">Archivo PDF</label>
+                {{ form.archivo }}
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-custom w-100">Subir Nota o Factura</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

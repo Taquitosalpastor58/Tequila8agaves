@@ -120,6 +120,45 @@
                 <button type="submit" form="descuentoForm" class="btn btn-primary w-100">Aplicar Descuento</button>
             </div>
         </div>
+
+        <div class="container mt-5">
+            <h2 class="text-center">Mensajes Especiales</h2>
+
+            <!-- Mostrar mensajes especiales -->
+            <div class="mb-4">
+                {% for mensaje in mensajes %}
+                <div class="alert alert-info">
+                    <h4>{{ mensaje.titulo }}</h4>
+                    <p>{{ mensaje.contenido }}</p>
+                    <small class="text-muted">Publicado el {{ mensaje.creado_en }}</small>
+                </div>
+                {% empty %}
+                <p class="text-center">No hay mensajes especiales.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Formulario para agregar mensajes -->
+            <div class="card shadow-sm p-4">
+                <h3 class="text-center">Agregar Mensaje</h3>
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="mensaje_form" value="1">
+                    {{ mensaje_form.as_p }}
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Agregar Mensaje</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <!-- Eliminar el botón de Finalizar Turno -->
+            <!-- Código eliminado -->
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
+        </div>
     </div>
 
     <script>

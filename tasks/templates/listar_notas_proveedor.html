@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background-color: #175d55;
+        color: #f0e8d1;
+    }
+    .container {
+        padding: 20px;
+    }
+    h2 {
+        color: #ff9812;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .btn-custom {
+        background-color: #ff9812;
+        color: #fff;
+        border: none;
+        transition: 0.3s;
+    }
+    .btn-custom:hover {
+        background-color: #d77d0c;
+    }
+    .table {
+        background-color: #f0e8d1;
+        color: #175d55;
+    }
+    .table th, .table td {
+        border-color: #ff9812;
+    }
+    .btn-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+    .alert {
+        text-align: center;
+    }
+</style>
+ 
+
+    <!-- Alertas visuales -->
+    <h2 class="text-center">Notas o Facturas de Proveedores</h2>
+
+  <!-- Filtro de búsqueda -->
+  <div class="text-center mb-4">
+  <div class="text-center mb-4">
+    <form method="GET" class="d-flex justify-content-center">
+        <input type="text" name="q" class="form-control w-50 me-2" placeholder="Buscar por nombre de proveedor" value="{{ query }}">
+        <input type="date" name="fecha" class="form-control w-25 me-2" value="{{ fecha }}">
+        <button type="submit" class="btn btn-custom">Buscar</button>
+    </form>
+</div>
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Proveedor</th>
+                <th>Archivo</th>
+                <th>Fecha de Subida</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nota in notas %}
+            <tr>
+                <td>{{ nota.proveedor.nombre_proveedor }}</td>
+                <td><a href="{{ nota.archivo.url }}" target="_blank">Ver Archivo</a></td>
+                <td>{{ nota.fecha_subida }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" class="text-center">No hay notas o facturas subidas.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}
