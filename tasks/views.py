@@ -2,12 +2,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import LoginForm, CustomUserCreationForm, InventarioForm, CategoriaForm, ProveedorForm, NotaProveedorForm
-from .models import VentaBarra, Inventario, Proveedor, NotaProveedor
+from .forms import LoginForm, CustomUserCreationForm, InventarioForm, CategoriaForm, ProveedorForm, NotaProveedorForm, MensajeCocinaForm
+from .models import VentaBarra, Inventario, Proveedor, NotaProveedor, BajaInventario, MensajeCocina
 from django.contrib import messages  # Importa la librería de mensajes
 from django.db.models import Q, F
 from datetime import date
-from .models import BajaInventario
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 
@@ -201,6 +200,8 @@ def admin_dashboard(request):
                 print("Errores en el formulario de producto:", form.errors)
                 messages.error(request, "Error al agregar el producto.")
 
+    mensajes = MensajeCocina.objects.all().order_by('-creado_en')
+
     return render(request, "admin_dashboard.html", {
         "productos": productos_paginados,
         "productos_bajo_stock": productos_bajo_stock,
@@ -213,7 +214,7 @@ def admin_dashboard(request):
         'bajas_inventario': bajas_inventario,
         'usuario_filtrado': usuario,
         'fecha_filtrada': fecha,
-        
+        "mensajes": mensajes,
     })
 
 @login_required
@@ -261,35 +262,38 @@ def cocina_dashboard(request):
         return redirect("login")
 
     productos = Inventario.objects.filter(para_cocina=True)
+    mensajes = MensajeCocina.objects.all().order_by('-creado_en')
 
     if request.method == "POST":
-        print("Datos recibidos en POST:", request.POST)
-        productos_ids = request.POST.getlist("productos")
-        for producto_id in productos_ids:
-            producto = get_object_or_404(Inventario, id=producto_id)
-            cantidad = int(request.POST.get(f"cantidad_{producto_id}", 0))
+        if "mensaje_form" in request.POST:
+            mensaje_form = MensajeCocinaForm(request.POST)
+            if mensaje_form.is_valid():
+                mensaje_form.save()
+                messages.success(request, "Mensaje agregado correctamente.")
+                return redirect("cocina_dashboard")
+        else:
+            productos_ids = request.POST.getlist("productos")
+            for producto_id in productos_ids:
+                producto = get_object_or_404(Inventario, id=producto_id)
+                cantidad = int(request.POST.get(f"cantidad_{producto_id}", 0))
 
-            print(f"Procesando producto: {producto.nombre_producto}, Cantidad solicitada: {cantidad}, Cantidad disponible: {producto.cantidad}")
+                if cantidad > 0 and cantidad <= producto.cantidad:
+                    producto.cantidad -= cantidad
+                    producto.save()
 
-            if cantidad > 0 and cantidad <= producto.cantidad:
-                producto.cantidad -= cantidad
-                producto.save()
+                    # Registrar la baja en el modelo BajaInventario
+                    BajaInventario.objects.create(
+                        usuario=request.user,
+                        producto=producto,
+                        cantidad=cantidad,
+                        tipo_baja="medio"  # Cambiar según el momento del turno
+                    )
 
-                # Registrar la baja en el modelo BajaInventario
-                BajaInventario.objects.create(
-                    usuario=request.user,
-                    producto=producto,
-                    cantidad=cantidad,
-                    tipo_baja="medio"  # Cambiar según el momento del turno
-                )
-                print(f"Descuento aplicado: {cantidad} de {producto.nombre_producto}")
-            else:
-                print(f"Error: Cantidad inválida para {producto.nombre_producto}")
+            messages.success(request, "Descuento aplicado correctamente.")
+            return redirect("cocina_dashboard")
 
-        messages.success(request, "Descuento aplicado correctamente.")
-        return redirect("cocina_dashboard")
-
-    return render(request, "cocina_dashboard.html", {"productos": productos})
+    mensaje_form = MensajeCocinaForm()
+    return render(request, "cocina_dashboard.html", {"productos": productos, "mensajes": mensajes, "mensaje_form": mensaje_form})
 
 @login_required
 def productos_por_proveedor(request, proveedor_id):
@@ -412,7 +416,19 @@ def agregar_nota_proveedor(request):
 
     return render(request, 'agregar_nota_proveedor.html', {'form': form})
 
+from django.db.models import Q
+
 @login_required
 def listar_notas_proveedor(request):
+    query = request.GET.get('q', '')
+    fecha = request.GET.get('fecha', '')
+
     notas = NotaProveedor.objects.all().order_by('-fecha_subida')
-    return render(request, 'listar_notas_proveedor.html', {'notas': notas})
+
+    if query:
+        notas = notas.filter(proveedor__nombre_proveedor__icontains=query)
+
+    if fecha:
+        notas = notas.filter(fecha_subida__date=fecha)
+
+    return render(request, 'listar_notas_proveedor.html', {'notas': notas, 'query': query, 'fecha': fecha})

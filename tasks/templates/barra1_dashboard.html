@@ -50,32 +50,7 @@
 <body>
     <div class="container mt-5">
         <h2>Productos para Barra 1</h2>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Unidad</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for producto in productos %}
-                <tr class="{% if producto.cantidad == 0 %}table-danger{% elif producto.cantidad <= producto.limite_stock %}table-warning{% endif %}">
-                    <td>{{ producto.nombre_producto }}</td>
-                    <td>{{ producto.cantidad }}</td>
-                    <td>{{ producto.unidad }}</td>
-                    <td>
-                        <a href="javascript:void(0);" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal{{ producto.id }}">Dar de Baja</a>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="text-center">No hay productos para Barra 1.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        
         {% for producto in productos %}
         <div class="modal fade" id="confirmModal{{ producto.id }}" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -154,6 +129,10 @@
                 </table>
                 <button type="submit" form="descuentoForm" class="btn btn-primary w-100">Aplicar Descuento</button>
             </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/logout" class="btn btn-danger">Cerrar Sesión</a>
         </div>
 
         <script>

@@ -167,3 +167,13 @@ class NotaProveedor(models.Model):
     # Método para representar el objeto como una cadena
     def __str__(self):
         return f"Nota de {self.proveedor.nombre_proveedor} - {self.fecha_subida}"
+
+# Modelo para mensajes especiales en el dashboard de cocina
+class MensajeCocina(models.Model):
+    titulo = models.CharField(max_length=100)
+    contenido = models.TextField()
+    creado_en = models.DateTimeField(auto_now_add=True)
+
+    # Método para representar el objeto como una cadena
+    def __str__(self):
+        return self.titulo

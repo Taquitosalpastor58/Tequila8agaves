@@ -1,7 +1,7 @@
 # Importaciones necesarias
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import CustomUser, VentaBarra, Inventario, Categoria, Proveedor, NotaProveedor
+from .models import CustomUser, VentaBarra, Inventario, Categoria, Proveedor, NotaProveedor, MensajeCocina
 
 # Formulario de creación de usuario personalizado
 class CustomUserCreationForm(UserCreationForm):
@@ -76,4 +76,14 @@ class NotaProveedorForm(forms.ModelForm):
         widgets = {
             'proveedor': forms.Select(attrs={'class': 'form-control'}),
             'archivo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+        }
+
+# Formulario para agregar mensajes especiales al dashboard de cocina
+class MensajeCocinaForm(forms.ModelForm):
+    class Meta:
+        model = MensajeCocina
+        fields = ['titulo', 'contenido']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'contenido': forms.Textarea(attrs={'class': 'form-control'}),
         }
